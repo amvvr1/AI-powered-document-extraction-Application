@@ -88,7 +88,7 @@ const DocumentAssistant = () => {
     formData.append('query', extractionQuery);
     
     try {
-      const response = await fetch('/upload', {
+      const response = await fetch('http://localhost:8080/upload', {
         method: 'POST',
         body: formData,
       });
@@ -174,7 +174,7 @@ const DocumentAssistant = () => {
       // Extract filename from download_url (e.g., "/download/filename.xlsx")
       const filename = extractedData.download_url.split('/').pop();
       
-      const response = await fetch(`/download/${filename}`);
+      const response = await fetch(`http://localhost:8080/download/${filename}`);
       
       if (response.ok) {
         const blob = await response.blob();
@@ -186,7 +186,7 @@ const DocumentAssistant = () => {
         window.URL.revokeObjectURL(url);
         
         // Optional: Clean up the file on server
-        await fetch(`/cleanup/${filename}`, { method: 'DELETE' });
+        await fetch(`http://localhost:8080/cleanup/${filename}`, { method: 'DELETE' });
       } else {
         throw new Error('Download failed');
       }
@@ -253,7 +253,7 @@ const DocumentAssistant = () => {
         {/* Progress Steps */}
         <div style={{display: 'flex', justifyContent: 'center', marginBottom: '3rem'}}>
           <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
-            {[1, 2, 3, 4, 5].map((step) => (
+            {[1, 2, 3, 4].map((step) => (
               <div key={step} style={{display: 'flex', alignItems: 'center'}}>
                 <div style={{
                   width: '40px',
@@ -269,7 +269,7 @@ const DocumentAssistant = () => {
                 }}>
                   {step}
                 </div>
-                {step < 5 && (
+                {step < 4 && (
                   <div style={{
                     width: '48px',
                     height: '4px',
@@ -445,7 +445,13 @@ const DocumentAssistant = () => {
                             fontSize: '14px',
                             color: '#1f2937'
                           }}>
-                            {typeof row === 'object' ? row[col] : row[cellIdx] || ''}
+                            {typeof row === 'object' ? 
+                              (typeof row[col] === 'object' && row[col] !== null ? 
+                                (row[col].value !== undefined ? row[col].value : JSON.stringify(row[col])) 
+                                : row[col]
+                              ) 
+                              : row[cellIdx] || ''
+                            }
                           </td>
                         ))}
                       </tr>
@@ -466,66 +472,11 @@ const DocumentAssistant = () => {
                   Download Excel
                 </button>
                 
-                {currentStep === 4 && (
-                  <button
-                    onClick={generateReport}
-                    style={styles.button}
-                  >
-                    Generate Report
-                  </button>
-                )}
               </div>
             </div>
           </div>
         )}
 
-        {/* Step 5: Generated Report */}
-        {currentStep === 5 && (
-          <div style={styles.card}>
-            <div style={{display: 'flex', alignItems: 'center', marginBottom: '1rem'}}>
-              <CheckCircle size={24} color="#10b981" style={{marginRight: '12px'}} />
-              <h2 style={{fontSize: '1.25rem', fontWeight: '600', margin: 0}}>Step 5: Actionable Report Generated</h2>
-            </div>
-            
-            {processing ? (
-              <div style={{textAlign: 'center', padding: '2rem'}}>
-                <Loader2 size={48} color="#2563eb" style={{margin: '0 auto 1rem', animation: 'spin 1s linear infinite'}} />
-                <p style={{color: '#6b7280'}}>Generating your report...</p>
-              </div>
-            ) : (
-              <div>
-                <div style={{
-                  backgroundColor: '#f9fafb',
-                  borderRadius: '8px',
-                  padding: '1.5rem',
-                  marginBottom: '1rem'
-                }}>
-                  <h3 style={{fontWeight: '600', marginBottom: '0.75rem'}}>Executive Summary</h3>
-                  <p style={{color: '#374151', marginBottom: '1rem'}}>
-                    Analysis of 15 records shows total revenue of $12.4M across active and pending contracts. 
-                    Key insights include 80% active rate and Q1 2024 concentration.
-                  </p>
-                  
-                  <h3 style={{fontWeight: '600', marginBottom: '0.75rem'}}>Key Metrics</h3>
-                  <ul style={{color: '#374151', margin: 0, paddingLeft: '1.5rem'}}>
-                    <li>Total Revenue: $12.4M</li>
-                    <li>Active Contracts: 12 (80%)</li>
-                    <li>Pending Contracts: 3 (20%)</li>
-                    <li>Average Deal Size: $826K</li>
-                  </ul>
-                </div>
-                
-                <button
-                  onClick={() => downloadReport()}
-                  style={styles.button}
-                >
-                  <Download size={16} />
-                  Download Full Report
-                </button>
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
       <style jsx>{`

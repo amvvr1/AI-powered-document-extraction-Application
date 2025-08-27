@@ -5,7 +5,6 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from tools.document_reader import DocumentReader
 from tools.requirement_processor import extract_requirements
 from tools.data_extractor import extract_data_from_doc
 from tools.excel_generator import json_to_excel
@@ -15,38 +14,13 @@ def doc_to_excel(doc_path: str, query: str, output_filename: str = None) -> dict
     """complete workflow to transform a document with the requirements a user specifies into an excel file"""
 
     try:
-        print("Reading document...")
-        reader = DocumentReader()
-        
-        if not reader.validate_file(doc_path):
-            return {
-                "status": "error",
-                "message": f"Unsupported file format: {Path(doc_path).suffix}",
-                "excel_path": None,
-                "extracted_data": None
-            }
-        
-        document_text = reader.read_document(doc_path)
-        
-        if "error" in document_text.lower():
-            return {
-                "status": "error",
-                "message": f"Document reading failed: {document_text}",
-                "excel_path": None,
-                "extracted_data": None
-            }
-        
-        print("Processing extraction requirements...")
         extraction_prompt = extract_requirements(query)
         
-        # Step 3: Extract data using AI
-        print("Extracting data with AI...")
         extracted_json = extract_data_from_doc(
             query=query,
             document=doc_path
         )
         
-        # Parse extracted data
         try:
             extracted_data = json.loads(extracted_json)
         except json.JSONDecodeError:
@@ -58,7 +32,7 @@ def doc_to_excel(doc_path: str, query: str, output_filename: str = None) -> dict
                 "extracted_data": extracted_json
             }
         
-        # Step 4: Generate Excel
+        # Generate Excel
         print("Creating Excel file...")
         if not output_filename:
             doc_name = Path(doc_path).stem

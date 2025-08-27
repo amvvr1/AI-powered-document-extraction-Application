@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from workflow import doc_to_excel, multiple_docs_to_excel
 from typing import Optional, List
@@ -10,6 +11,15 @@ import shutil
 
 
 app = FastAPI(title="Document Parser API", version="1.0")
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 UPLOAD_DIR = Path("temp_uploads")
 OUTPUT_DIR = Path("outputs")
