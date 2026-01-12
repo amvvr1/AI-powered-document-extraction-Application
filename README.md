@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## AI-powered document extraction Application 
 
 This tool is an AI-powered document extraction tool that allows you to upload your documents and it extracts any key metric you want it to extract from the documents with zero hallucinations and extreme accuracy
@@ -12,3 +13,6 @@ This tool is an AI-powered document extraction tool that allows you to upload yo
 - multi-doc format handling(images, pdfs, image pdfs, Word)
 - multi-language handling
 - conversion to Excel format after extraction 
+=======
+
+>>>>>>> 523c899f0260219176098b222edfca4bb44f4c99
