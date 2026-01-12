@@ -13,3 +13,9 @@ This tool is an AI-powered document extraction tool that allows you to upload yo
 - multi-language handling
 - conversion to Excel format after extraction 
 
+
+### Tech Stack
+- Python 3.11
+- FastAPI backend
+- OpenAI gpt-4o-mini model
+- React frontend
