@@ -1,0 +1,11 @@
+.env
+
+temp_uploads/
+
+outputs/
+
+__pycache__/
+
+
+test-data/
+
