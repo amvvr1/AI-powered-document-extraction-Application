@@ -5,6 +5,8 @@ This tool is an AI-powered document extraction tool that allows you to upload yo
 
 ### DEMO
 
+https://github.com/user-attachments/assets/e6bf9440-85d8-43a1-91e7-6ae0fc6af58a
+
 
 
 ### Features
